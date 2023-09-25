@@ -40,7 +40,7 @@ function sendMessageByName(name) {
     id("g0").findOne().click();
     id("apy").findOne().click();
 }
-"auto"; //无障碍检测
+auto.waitFor(); //无障碍检测
 setScreenMetrics(1440, 3200); //设置屏幕像素
 // 锁屏密码
 password = [0, 8, 1, 7];
