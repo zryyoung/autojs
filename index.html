@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	 <!--
+		/**
+		 * @author: Ruyi Zhang
+		 * @date: 2023/10/20 17:25
+		 * @description:
+		 */
+	-->
+        <meta charset="UTF-8">
+        <title>index</title>
+        <style>
+		#video-container {
+            width: 100%;
+            height: 0;
+        }
+        #video-container video {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .button {
+			background-color: #4caf50b7;
+			border: none;
+			color: white;
+			padding: 15px 25px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			margin: 100px 2px;
+			cursor: pointer;
+			border-radius: 8px;
+		}
+		#next{
+			position: absolute;
+			bottom: 10px;
+			right: 10px;
+		}
+		 #exit{
+			position: absolute;
+			bottom: 10px;
+			right: 118px;
+		 }
+		 #up{
+			position: absolute;
+			bottom: 10px;
+			left: 10px;
+		 }
+		 #download{
+			position: absolute;
+			bottom: 10px;
+			left: 118px;
+		 }
+     
+        </style>
+    </head>
+    <body>
+        <div id="video-container">
+            <!-- 在这里放置视频播放器 -->
+        </div>
+        <div><input class="button" id="up" type="button" value="上一个">
+        </div>
+        <div><input class="button" id="next" type="button" value="下一个">
+        </div>
+        <div><input class="button" id="download" type="button" value="下载">
+        </div>
+        <div><input class="button" id="exit" type="button" value="退出">
+        </div>
+<script type="text/javascript">
+        var videoContainer = document.getElementById('video-container');
+        var videoElementBak = null;
+        var urlbak = '';
+        var downloadUrl = '';
+        var urlbakArray =[];
+requistJK();
+document.getElementById("next").addEventListener("click", function() {
+        console.log("下一条");
+  videoElementBak.parentNode.removeChild(videoElementBak);
+        requistJK();
+});
+document.getElementById("up").addEventListener("click", function() {
+        console.log("上一条");
+		if(urlbakArray.length>=2){
+			for(var i = urlbakArray.length-1; i >= 0; i--) {
+				if(i==0){
+					confirm("这已经是第一个");
+					break;
+				}
+				if(urlbakArray[i]==downloadUrl){
+					videoContainer.removeChild(videoElementBak);
+					playVideoForward(urlbakArray[i-1]);
+					break;
+				}
+			}
+        }else{
+			confirm("没有上一个");
+        }
+});
+document.getElementById("exit").addEventListener("click", function() {
+        console.log("退出");
+        window.close();
+});
+document.getElementById("download").addEventListener("click", function() {
+        console.log("下载");
+// 调用下载函数，并传入视频的URL
+downloadVideo(downloadUrl);
+});
+function exitApp() {
+  // 使用适合你的应用程序框架或平台的退出应用程序命令来关闭应用程序
+  // 这可能涉及到调用特定的应用程序接口 (API) 或触发特定的事件
+  // 这里只提供一个示例，具体实现细节需要根据你的应用程序环境进行调整
+  if (navigator.app && navigator.app.exitApp) {
+    navigator.app.exitApp();
+  } else if (navigator.device && navigator.device.exitApp) {
+    navigator.device.exitApp();
+  }
+}
+function downloadVideo(url) {
+  const link = document.createElement('a'); // 创建一个a标签
+  link.href = url; // 设置a标签的href属性为视频链接
+    // 提取链接中的文件名
+const fileName = url.substring(url.lastIndexOf('/') + 1);
+// 创建一个链接元素
+link.download = fileName;
+  link.setAttribute('download', ''); // 添加download属性，提示浏览器下载而不是在当前窗口打开
+  document.body.appendChild(link); // 将a标签添加到页面的body中
+  link.click(); // 模拟点击a标签进行下载
+  document.body.removeChild(link); // 下载完成后，移除该a标签
+}
+function requistJK(){
+          var httpRequest = new XMLHttpRequest();
+        httpRequest.open('GET', 'https://v.api.aa1.cn/api/api-girl-11-02/index.php?type=url', true);
+        httpRequest.send();
+        httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+                var json = httpRequest.responseText;//获取到json字符串，还需解析
+                console.log(json);
+                playVideo(json)
+            }
+        }
+}
+      
+function playVideo(videoUrl) {
+  var videoElement = document.createElement('video');
+  videoElementBak = videoElement
+  videoElement.src = `https:${videoUrl}`;
+  downloadUrl = `https:${videoUrl}`;
+  urlbakArray.push(downloadUrl);
+  // 添加播放器属性
+  videoElement.controls = true;
+  videoElement.autoplay = true;
+  videoElement.loop=true;
+  videoElement.preload = "metadata";
+  // 将视频元素添加到容器中
+  videoContainer.appendChild(videoElement);
+  videoElement.play();
+  videoElement.addEventListener('ended', function() {
+        this.currentTime = 0;
+        this.play();
+    }, true);
+}
+function playVideoForward(videoUrl) {
+  var videoElement = document.createElement('video')
+  videoElementBak = videoElement
+  videoElement.src = videoUrl
+  downloadUrl = videoUrl
+  // 添加播放器属性
+  videoElement.controls = true;
+  videoElement.autoplay = true;
+  videoElement.loop = true;
+  videoElement.preload = "metadata";
+  // 将视频元素添加到容器中
+  videoContainer.appendChild(videoElement);
+  videoElement.play();
+  videoElement.addEventListener('ended', function() {
+        this.currentTime = 0;
+        this.play();
+    }, true);
+}
+</script>
+    </body>
+</html>
