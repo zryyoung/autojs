@@ -41,9 +41,9 @@ function autoStar() {
                             click(centerX, centerY);
                             sleep(1000)
                         }else{
-                            toastLog("cancel star")
-                            click(centerX, centerY);
-                            sleep(1000)
+                            //toastLog("cancel star")
+                            //click(centerX, centerY);
+                            //sleep(1000)
                         }
                     }
                 } else {
