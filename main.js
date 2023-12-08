@@ -14,6 +14,7 @@ function unlockPhone(password) {
         }
     }
 }
+<<<<<<< HEAD
 events.observeToast()
 events.onToast(function (toast) {
     var pkg = toast.getPackageName();
@@ -30,6 +31,25 @@ events.onToast(function (toast) {
     }
 });
 toast("监听中，请在日志中查看记录的Toast及其内容");
+=======
+threads.start(function(){
+    events.observeToast()
+    events.onToast(function (toast) {
+        var pkg = toast.getPackageName();
+        log("Toast内容: " + toast.getText() +
+            " 来自: " + getAppName(pkg) +
+            " 包名: " + pkg);
+        if (pkg == "com.tencent.mm" && currentActivity().search('com.tencent.mm') == -1) {
+            // var nameAndMessageSet = toast.getText().toString().split(":");
+            // 锁屏密码
+            var password = [0, 8, 1, 7];
+            // 解锁手机
+            unlockPhone(password);
+            launchApp("微信");
+        }
+    });
+})
+>>>>>>> 11b2914 (first commit)
 //主线程
 do {
     sleep(3000);
