@@ -14,7 +14,6 @@ function unlockPhone(password) {
         }
     }
 }
-<<<<<<< HEAD
 events.observeToast()
 events.onToast(function (toast) {
     var pkg = toast.getPackageName();
@@ -30,8 +29,6 @@ events.onToast(function (toast) {
         launchApp("微信");
     }
 });
-toast("监听中，请在日志中查看记录的Toast及其内容");
-=======
 threads.start(function(){
     events.observeToast()
     events.onToast(function (toast) {
@@ -49,7 +46,6 @@ threads.start(function(){
         }
     });
 })
->>>>>>> 11b2914 (first commit)
 //主线程
 do {
     sleep(3000);
