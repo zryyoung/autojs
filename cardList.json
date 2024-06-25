@@ -1,4 +1,4 @@
-var cardList = [
+const cardList = [
     {
         "title": "功能1",
         "url": "https://pic.rmb.bdstatic.com/bjh/171cd6cf9e22e5a8ac1567725a71a8e4.jpeg"
