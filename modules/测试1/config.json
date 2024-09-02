@@ -1,0 +1,6 @@
+{
+    "name": "Shizuku",
+    "icon": "icon.png",
+    "description": "利用Shizuku授权，执行adb命名",
+    "version": "1.0.0"
+}

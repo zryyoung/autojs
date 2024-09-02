@@ -1,0 +1,28 @@
+{
+  "assets": [],
+  "build": {
+    "build_id": "AADEAFCE-18",
+    "build_number": 18,
+    "build_time": 1725294929766,
+    "release": false
+  },
+  "encryptLevel": 0,
+  "useFeatures": [],
+  "icon": "res/icon.png",
+  "launchConfig": {
+    "displaySplash": true,
+    "hideLogs": false,
+    "splashText": "Powered by Auto.js Pro",
+    "stableMode": false
+  },
+  "main": "main.js",
+  "name": "AppUI",
+  "optimization": {
+    "removeOpenCv": false,
+    "unusedResources": false
+  },
+  "packageName": "org.autojs.app.ui",
+  "scripts": {},
+  "versionCode": 1,
+  "versionName": "1.0.0"
+}
