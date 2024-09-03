@@ -40,36 +40,70 @@ var moduleNames = files.listDir(modulesDir, function(name) {
 // 获取模块数量
 var moduleCount = moduleNames.length;
 
-// 获取 GitHub 用户的所有仓库
-function fetchRepositories(username) {
-    console.log("向Github仓库发送请求")
-    const url = 'https://api.github.com/users/zryyoung/repos';
-    const headers = {
-        "User-Agent": "Guitar-Autojs-App", // 自定义的 User-Agent
-        //"Authorization": "token YOUR_GITHUB_TOKEN" // 如果有 GitHub token，可以提高请求限额
-    };
-    const response = http.get(url, {
-        headers: headers
-    });
-    if (response.statusCode == 200) {
-    const repositories = response.body.json();
-    console.log(response)
-    } else {
-    console.log("请求失败，状态码:", response.statusCode);
-    toastLog("连接Github失败，请检查网络")
-}
-    return repositories.map(repo => ({
-        title: repo.name || "无",
-        description: repo.description || "无描述",
-        version: repo.language || "未知语言",
-        icon: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" ||".//res/icon.png"
-    }));
-}
 // 模拟 GitHub 用户名
 const username = "zryyoung";
-//需要网络，还需要可以连接Github
-const repositories = fetchRepositories(username);
-const moduleDownloadCount = repositories.length;
+// 使用回调函数处理返回的数据
+fetchRepositories(username, function(repositories) {
+    var moduleDownloadCount = repositories.length;
+    console.log("模块数量:", moduleDownloadCount);
+
+    // 在UI线程中更新UI
+    ui.run(() => {
+        ui.moduleDownloadList.setDataSource(repositories);
+        ui.moduleDownloadCount.setText("仓库共 " + moduleDownloadCount + " 个模块")
+    });
+});
+// 获取 GitHub 用户的所有仓库，并通过回调函数处理结果
+function fetchRepositories(username, callback) {
+    
+    console.log("向Github仓库发送请求");
+    threads.start(function() {
+        let repositories = [];
+        try {
+            const url = 'https://api.github.com/users/' + username + '/repos';
+            const headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+            };
+            const response = http.get(url, { headers: headers });
+
+            if (response.statusCode == 200) {
+                const data = response.body.json();
+                repositories = data.map(repo => ({
+                    title: repo.name || "无",
+                    description: repo.description || "无描述",
+                    version: repo.language || "未知语言",
+                    icon: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                }));
+            } else {
+                console.log("请求失败，状态码:", response.statusCode);
+                toastLog("连接Github失败，请检查网络");
+            }
+        } catch (e) {
+            console.log("请求异常:", e);
+            toastLog("连接Github异常，请检查网络");
+        }
+
+        // 如果请求失败或异常，返回模拟数据
+        if (repositories.length === 0) {
+            repositories = [
+                {
+                    title: "模拟模块1",
+                    description: "这是一个模拟描述1",
+                    version: "JavaScript",
+                    icon: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                },
+                {
+                    title: "模拟模块2",
+                    description: "这是一个模拟描述2",
+                    version: "Python",
+                    icon: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                }
+            ];
+        }
+        // 调用回调函数，将数据返回
+        callback(repositories);
+    });
+}
 // 初始化状态栏颜色
 //ui.statusBarColor(themeColor);
 //ui.statusBarColor("#009788");//状态栏背景色
@@ -90,7 +124,7 @@ ui.layout(
             <frame>
                 <vertical id="moduleDownloadView" padding="16">
                     <text id="moduleDownloadText" text="Github仓库下载" textStyle="bold" textColor="#000000" textSize="24sp" />
-                    <text text={"仓库共 " + moduleDownloadCount + " 个模块"} textStyle="bold" textSize="16sp" marginTop="8" />
+                    <text id="moduleDownloadCount"  text={"仓库共 个模块"} textStyle="bold" textSize="16sp" marginTop="8" />
                     <scroll>
                         <list id="moduleDownloadList" marginTop="16">
                             <horizontal padding="8" bg="?selectableItemBackground" w="*" h="wrap_content">
@@ -648,9 +682,7 @@ var modules = moduleNames.map(function(name) {
     };
 });
 // 绑定数据到列表,将仓库下载的模块数据设置到UI列表中
-ui.moduleDownloadList.setDataSource(repositories);
-// 设置数据源到列表
-ui.moduleDownloadList.setDataSource(repositories);
+//ui.moduleDownloadList.setDataSource(repositories);
 
 // 将模块数据设置到UI列表中
 ui.moduleList.setDataSource(modules);
@@ -915,30 +947,32 @@ let checkUpdata = null;
 let checkUpdataStatue=false;
 ui.checkNew.on('click', function() {
     console.log("检测更新");
+    threads.start(function() {
     try{
         if(!checkUpdataStatue){
             checkUpdataStatue=true;
             if(windowLoad==null){
-                windowLoad = 加载动画();
+                //windowLoad = 
+                threads.start(function() {加载动画();})
                 setTimeout(() => {
                     //engines.execScriptFile("./runJs/checkUpdata.js");
                     if(checkUpdata==null){
                         checkUpdata = require("./runJs/checkNew.js");
                         checkUpdata.main();
-                        setTimeout(() => {
-                            checkUpdata = null;
-                            //engines.execScriptFile("./modules/高德地图Dex/定位.js");
-                            windowLoad=null;
-                            checkUpdataStatue=false;
-                        },3000)
+                        
+                        checkUpdata = null;
+                        //engines.execScriptFile("./modules/高德地图Dex/定位.js");
+                        //windowLoad=null;
+                        checkUpdataStatue=false;
                     }else{
                         toastLog("检查更新脚本运行中,请稍后再试")
+                        return;
                     }
-                }, 1000);
+                }, 3000);
             }else{
                 console.log("关闭加载窗口动画")
-                windowLoad.close();
-                windowLoad=null;
+                //windowLoad.close();
+                //windowLoad=null;
             }
         }else{
             toast("正在检查更新");
@@ -946,10 +980,15 @@ ui.checkNew.on('click', function() {
     }catch(e){
         console.log(e)
     }
+    })
 });
 function 加载动画(){
-    var windowLoad = floaty.rawWindow(
-    <frame w="100dp" h="100dp" alpha="1.0">
+    if(windowLoad!=null){
+        windowLoad.close();
+        windowLoad=null;
+    }
+    windowLoad = floaty.rawWindow(
+    <frame w="100dp" h="100dp" marginLeft="130" marginTop="300" alpha="1.0">
         <vertical gravity="center" layout_width="match_parent" layout_height="match_parent">
             <canvas id="canvas" layout_width="40dp" layout_height="40dp"/>
         </vertical>
@@ -991,10 +1030,10 @@ function 加载动画(){
         }
     });
     // 设置悬浮窗的显示位置
-    windowLoad.setPosition(530, 1000);
-    // 设置一个定时器，在5秒后关闭悬浮窗
+    //windowLoad.setPosition(530, 1100);
     setTimeout(() => {
         windowLoad.close();
-    }, 1000);
-    return windowLoad;
+        windowLoad=null;
+    },3000)
+    //return windowLoad;
 }
