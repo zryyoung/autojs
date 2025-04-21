@@ -1,0 +1,28 @@
+{
+  "assets": [],
+  "build": {
+    "build_id": "D505E259-2",
+    "build_number": 2,
+    "build_time": 1724789863920,
+    "release": false
+  },
+  "encryptLevel": 0,
+  "useFeatures": [],
+  "icon": "res/icon.png",
+  "launchConfig": {
+    "displaySplash": true,
+    "hideLogs": false,
+    "splashText": "Powered by Auto.js Pro",
+    "stableMode": false
+  },
+  "main": "main.js",
+  "name": "WeChat",
+  "optimization": {
+    "removeOpenCv": false,
+    "unusedResources": false
+  },
+  "packageName": "org.autojs.wechat",
+  "scripts": {},
+  "versionCode": 1,
+  "versionName": "1.1.0"
+}

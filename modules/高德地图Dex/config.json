@@ -1,0 +1,6 @@
+{
+    "name": "高德地图定位Dex",
+    "icon": "icon.png",
+    "description": "Dex调用高德地图定位获取当前位置，复制到剪切板",
+    "version": "1.0.0"
+}
