@@ -1,0 +1,10 @@
+{
+    "name": "WeChat",
+    "main": "main.js",
+    "ignore": [
+        "build"
+    ],
+    "packageName": "org.autojs.wechat",
+    "versionName": "1.0.0",
+    "versionCode": 1
+}
