@@ -1,10 +1,18 @@
 {
+<<<<<<< HEAD
     "name": "WeChat",
+=======
+    "name": "新建项目",
+>>>>>>> coolpak/main
     "main": "main.js",
     "ignore": [
         "build"
     ],
+<<<<<<< HEAD
     "packageName": "org.autojs.wechat",
+=======
+    "packageName": "org.autojs.coolpak",
+>>>>>>> coolpak/main
     "versionName": "1.0.0",
     "versionCode": 1
 }
